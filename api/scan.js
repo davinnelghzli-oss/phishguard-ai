@@ -8,16 +8,13 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
 
   const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey) {
-    console.error("GEMINI_API_KEY is not set!");
-    return res.status(500).json({ error: "API key not configured" });
-  }
+  if (!apiKey) return res.status(500).json({ error: "API key not configured" });
 
   try {
     const { prompt } = req.body;
 
     const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -32,16 +29,12 @@ export default async function handler(req, res) {
     console.log("Gemini response:", raw.substring(0, 300));
 
     const data = JSON.parse(raw);
-
-    if (data.error) {
-      console.error("Gemini API error:", data.error.message);
-      return res.status(500).json({ error: data.error.message });
-    }
+    if (data.error) return res.status(500).json({ error: data.error.message });
 
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
     return res.status(200).json({ text });
   } catch (err) {
-    console.error("Scan error:", err.message);
+    console.error("Error:", err.message);
     return res.status(500).json({ error: err.message });
   }
 }
