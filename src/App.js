@@ -12,15 +12,11 @@ const STYLES = `
   }
   body { background: var(--bg); color: var(--text); font-family: var(--font-mono); }
   .app { min-height: 100vh; background: var(--bg); position: relative; overflow: hidden; }
-  .grid-bg {
-    position: fixed; inset: 0; pointer-events: none; z-index: 0;
-    background-image: linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-  }
+  .grid-bg { position: fixed; inset: 0; pointer-events: none; z-index: 0; background-image: linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px); background-size: 40px 40px; }
   .glow-orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(80px); opacity: 0.15; }
   .glow-orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, #00d4ff 0%, transparent 70%); top: -200px; left: -200px; }
   .glow-orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #ff3b5c 0%, transparent 70%); bottom: -100px; right: -100px; }
-  .container { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+  .container { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 40px 24px 80px; }
   .header { text-align: center; margin-bottom: 52px; animation: fadeDown 0.6s ease both; }
   .header-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2); color: var(--accent); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; padding: 6px 14px; border-radius: 20px; margin-bottom: 20px; }
   .badge-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse-dot 1.5s ease infinite; }
@@ -58,14 +54,23 @@ const STYLES = `
   .analysis-section { margin-top: 20px; }
   .analysis-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
   .analysis-text { font-size: 13px; line-height: 1.8; color: var(--text); background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; white-space: pre-wrap; word-break: break-word; }
-  .location-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px; }
-  .location-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
-  .location-details { flex: 1; }
-  .location-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 4px; }
-  .location-value { font-size: 13px; color: var(--text); line-height: 1.6; }
-  .location-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
-  .location-tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2); color: var(--accent); }
-  .location-tag.hosting { background: rgba(255,59,92,0.1); border-color: rgba(255,59,92,0.2); color: var(--danger); }
+  .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+  .info-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .info-box-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 6px; }
+  .info-box-value { font-size: 13px; color: var(--text); font-weight: 500; word-break: break-all; }
+  .info-box-value.danger { color: var(--danger); }
+  .info-box-value.safe { color: var(--safe); }
+  .info-box-value.warn { color: var(--warn); }
+  .brand-box { background: rgba(255,59,92,0.08); border: 1px solid rgba(255,59,92,0.25); border-radius: 10px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; }
+  .brand-icon { font-size: 24px; }
+  .brand-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 4px; }
+  .brand-name { font-family: var(--font-head); font-size: 18px; font-weight: 700; color: var(--danger); }
+  .preview-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .preview-bar { background: var(--surface); padding: 8px 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); }
+  .preview-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .preview-url { font-size: 11px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+  .preview-img { width: 100%; height: 240px; object-fit: cover; object-position: top; display: block; border: none; }
+  .preview-loading { width: 100%; height: 240px; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 12px; }
   .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-top: 16px; }
   .feature-chip { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 11px; }
   .feature-chip .fc-label { color: var(--muted); margin-bottom: 3px; }
@@ -197,29 +202,8 @@ function extractJSON(text) {
     confidence: confMatch ? parseFloat(confMatch[1]) : 75,
     summary: text.slice(0, 300),
     risk_factors: [],
+    brand: "None",
   };
-}
-
-function parseLocation(locationStr) {
-  if (
-    !locationStr ||
-    locationStr === "Unknown" ||
-    locationStr === "Could not resolve location"
-  )
-    return null;
-  const parts = locationStr.split("|").map((s) => s.trim());
-  const geo = parts[0] || "";
-  const isp = parts[1]?.replace("ISP:", "").trim() || "";
-  const hosting = parts[2]?.includes("Yes") || false;
-  const countryMatch = geo.match(/\(([A-Z]{2})\)/);
-  const countryCode = countryMatch ? countryMatch[1] : "";
-  const location = geo
-    .replace(/\([A-Z]{2}\)/, "")
-    .trim()
-    .replace(/,\s*,/g, ",")
-    .replace(/^,|,$/g, "")
-    .trim();
-  return { location, isp, hosting, countryCode };
 }
 
 async function analyzeWithGemini(url, features) {
@@ -234,9 +218,10 @@ Features:
 ${featStr}
 
 Reply with ONLY a JSON object like this (no markdown, no explanation):
-{"verdict":"PHISHING","confidence":95,"summary":"This URL is phishing because...","risk_factors":["reason 1","reason 2"]}
+{"verdict":"PHISHING","confidence":95,"summary":"This URL is phishing because...","risk_factors":["reason 1","reason 2"],"brand":"PayPal"}
 
-verdict must be exactly PHISHING, SAFE, or SUSPICIOUS.`;
+verdict must be exactly PHISHING, SAFE, or SUSPICIOUS.
+brand = the real brand being impersonated, or "None".`;
 
   const response = await fetch("/api/scan", {
     method: "POST",
@@ -247,7 +232,49 @@ verdict must be exactly PHISHING, SAFE, or SUSPICIOUS.`;
   if (!response.ok) throw new Error("API error: " + response.status);
   const data = await response.json();
   if (data.error) throw new Error(data.error);
-  return { analysis: extractJSON(data.text), location: data.location };
+  return { analysis: extractJSON(data.text), siteInfo: data.siteInfo };
+}
+
+function flagEmoji(code) {
+  if (!code || code.length !== 2) return "🌐";
+  return String.fromCodePoint(
+    ...[...code.toUpperCase()].map((c) => 127397 + c.charCodeAt(0)),
+  );
+}
+
+function PreviewImage({ url }) {
+  const [loaded, setLoaded] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const cleanUrl = url.startsWith("http") ? url : "https://" + url;
+  const previewUrl = `https://image.thum.io/get/width/800/crop/600/${cleanUrl}`;
+
+  return (
+    <div className="preview-box">
+      <div className="preview-bar">
+        <div className="preview-dot" style={{ background: "#ff5f57" }} />
+        <div className="preview-dot" style={{ background: "#febc2e" }} />
+        <div className="preview-dot" style={{ background: "#28c840" }} />
+        <span className="preview-url">{cleanUrl}</span>
+      </div>
+      {!failed ? (
+        <>
+          {!loaded && <div className="preview-loading">Loading preview...</div>}
+          <img
+            src={previewUrl}
+            alt="Website preview"
+            className="preview-img"
+            style={{ display: loaded ? "block" : "none" }}
+            onLoad={() => setLoaded(true)}
+            onError={() => setFailed(true)}
+          />
+        </>
+      ) : (
+        <div className="preview-loading">
+          Preview not available for this URL
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default function PhishingDetector() {
@@ -270,15 +297,16 @@ export default function PhishingDetector() {
     setError("");
     try {
       const features = extractUrlFeatures(trimmed);
-      const { analysis, location } = await analyzeWithGemini(trimmed, features);
+      const { analysis, siteInfo } = await analyzeWithGemini(trimmed, features);
       const res = {
         url: trimmed,
         verdict: analysis.verdict || "SUSPICIOUS",
         confidence: analysis.confidence || 75,
         summary: analysis.summary || "Analysis complete.",
         risk_factors: analysis.risk_factors || [],
+        brand: analysis.brand || "None",
         features,
-        location: location || null,
+        siteInfo: siteInfo || {},
         timestamp: new Date().toLocaleTimeString(),
       };
       setResult(res);
@@ -299,15 +327,6 @@ export default function PhishingDetector() {
   const vc = (v) =>
     v === "PHISHING" ? "phishing" : v === "SAFE" ? "safe" : "suspicious";
   const vi = (v) => (v === "PHISHING" ? "🔴" : v === "SAFE" ? "🟢" : "🟡");
-
-  const locationData = result ? parseLocation(result.location) : null;
-
-  const flagEmoji = (code) => {
-    if (!code || code.length !== 2) return "🌐";
-    return String.fromCodePoint(
-      ...[...code.toUpperCase()].map((c) => 127397 + c.charCodeAt(0)),
-    );
-  };
 
   return (
     <>
@@ -422,39 +441,68 @@ export default function PhishingDetector() {
                 </div>
               </div>
 
-              {locationData && (
+              {result.brand && result.brand !== "None" && (
                 <div className="analysis-section">
-                  <div className="analysis-title">Server Location</div>
-                  <div className="location-box">
-                    <div className="location-icon">
-                      {flagEmoji(locationData.countryCode)}
-                    </div>
-                    <div className="location-details">
-                      <div className="location-label">Geographic Location</div>
-                      <div className="location-value">
-                        {locationData.location || "Unknown location"}
+                  <div className="analysis-title">
+                    Brand Impersonation Detected
+                  </div>
+                  <div className="brand-box">
+                    <span className="brand-icon">🎭</span>
+                    <div>
+                      <div className="brand-label">
+                        This site is impersonating
                       </div>
-                      <div className="location-row">
-                        {locationData.countryCode && (
-                          <span className="location-tag">
-                            {locationData.countryCode}
-                          </span>
-                        )}
-                        {locationData.isp && (
-                          <span className="location-tag">
-                            ISP: {locationData.isp}
-                          </span>
-                        )}
-                        {locationData.hosting && (
-                          <span className="location-tag hosting">
-                            Hosting Provider ⚠
-                          </span>
-                        )}
-                      </div>
+                      <div className="brand-name">{result.brand}</div>
                     </div>
                   </div>
                 </div>
               )}
+
+              <div className="analysis-section">
+                <div className="analysis-title">Server Intelligence</div>
+                <div className="info-grid">
+                  <div className="info-box">
+                    <div className="info-box-label">IP Address</div>
+                    <div className="info-box-value">
+                      {result.siteInfo?.ip || "Unknown"}
+                    </div>
+                  </div>
+                  <div className="info-box">
+                    <div className="info-box-label">Location</div>
+                    <div className="info-box-value">
+                      {result.siteInfo?.countryCode
+                        ? flagEmoji(result.siteInfo.countryCode) + " "
+                        : ""}
+                      {[result.siteInfo?.city, result.siteInfo?.country]
+                        .filter(Boolean)
+                        .join(", ") || "Unknown"}
+                    </div>
+                  </div>
+                  <div className="info-box">
+                    <div className="info-box-label">ISP</div>
+                    <div className="info-box-value">
+                      {result.siteInfo?.isp || "Unknown"}
+                    </div>
+                  </div>
+                  <div className="info-box">
+                    <div className="info-box-label">Hosting Provider</div>
+                    <div
+                      className={
+                        "info-box-value " +
+                        (result.siteInfo?.hosting ? "warn" : "safe")
+                      }
+                    >
+                      {result.siteInfo?.org || "Unknown"}
+                      {result.siteInfo?.hosting ? " ⚠" : ""}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="analysis-section">
+                <div className="analysis-title">Website Preview</div>
+                <PreviewImage url={result.url} />
+              </div>
 
               <div className="analysis-section">
                 <div className="analysis-title">AI Analysis</div>
@@ -560,9 +608,10 @@ export default function PhishingDetector() {
             >
               PhishGuard AI
             </div>
-            AI-Based Phishing Website Detection System · Website by Ghazali Davin El
+            AI-Based Phishing Website Detection System · FYP by Ghazali · 2026
             <br />
-            Always verify results independently.
+            This tool is for educational and research purposes. Always verify
+            results independently.
           </div>
         </div>
       </div>
