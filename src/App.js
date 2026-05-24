@@ -58,6 +58,14 @@ const STYLES = `
   .analysis-section { margin-top: 20px; }
   .analysis-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
   .analysis-text { font-size: 13px; line-height: 1.8; color: var(--text); background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; white-space: pre-wrap; word-break: break-word; }
+  .location-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px; }
+  .location-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+  .location-details { flex: 1; }
+  .location-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 4px; }
+  .location-value { font-size: 13px; color: var(--text); line-height: 1.6; }
+  .location-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+  .location-tag { font-size: 11px; padding: 3px 10px; border-radius: 20px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2); color: var(--accent); }
+  .location-tag.hosting { background: rgba(255,59,92,0.1); border-color: rgba(255,59,92,0.2); color: var(--danger); }
   .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-top: 16px; }
   .feature-chip { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 11px; }
   .feature-chip .fc-label { color: var(--muted); margin-bottom: 3px; }
@@ -163,33 +171,55 @@ function extractUrlFeatures(url) {
 }
 
 function extractJSON(text) {
-  // Try direct parse first
   try {
     return JSON.parse(text);
   } catch (e) {}
-  // Try extracting from markdown code blocks
   const match = text.match(/```(?:json)?\s*([\s\S]*?)```/);
   if (match) {
     try {
       return JSON.parse(match[1].trim());
     } catch (e) {}
   }
-  // Try finding raw JSON object
   const objMatch = text.match(/\{[\s\S]*\}/);
   if (objMatch) {
     try {
       return JSON.parse(objMatch[0]);
     } catch (e) {}
   }
-  // Build fallback from text content
   const verdict = text.includes("PHISHING")
     ? "PHISHING"
     : text.includes("SAFE")
       ? "SAFE"
       : "SUSPICIOUS";
   const confMatch = text.match(/(\d+(?:\.\d+)?)\s*%/);
-  const confidence = confMatch ? parseFloat(confMatch[1]) : 75;
-  return { verdict, confidence, summary: text.slice(0, 300), risk_factors: [] };
+  return {
+    verdict,
+    confidence: confMatch ? parseFloat(confMatch[1]) : 75,
+    summary: text.slice(0, 300),
+    risk_factors: [],
+  };
+}
+
+function parseLocation(locationStr) {
+  if (
+    !locationStr ||
+    locationStr === "Unknown" ||
+    locationStr === "Could not resolve location"
+  )
+    return null;
+  const parts = locationStr.split("|").map((s) => s.trim());
+  const geo = parts[0] || "";
+  const isp = parts[1]?.replace("ISP:", "").trim() || "";
+  const hosting = parts[2]?.includes("Yes") || false;
+  const countryMatch = geo.match(/\(([A-Z]{2})\)/);
+  const countryCode = countryMatch ? countryMatch[1] : "";
+  const location = geo
+    .replace(/\([A-Z]{2}\)/, "")
+    .trim()
+    .replace(/,\s*,/g, ",")
+    .replace(/^,|,$/g, "")
+    .trim();
+  return { location, isp, hosting, countryCode };
 }
 
 async function analyzeWithGemini(url, features) {
@@ -217,7 +247,7 @@ verdict must be exactly PHISHING, SAFE, or SUSPICIOUS.`;
   if (!response.ok) throw new Error("API error: " + response.status);
   const data = await response.json();
   if (data.error) throw new Error(data.error);
-  return extractJSON(data.text);
+  return { analysis: extractJSON(data.text), location: data.location };
 }
 
 export default function PhishingDetector() {
@@ -240,7 +270,7 @@ export default function PhishingDetector() {
     setError("");
     try {
       const features = extractUrlFeatures(trimmed);
-      const analysis = await analyzeWithGemini(trimmed, features);
+      const { analysis, location } = await analyzeWithGemini(trimmed, features);
       const res = {
         url: trimmed,
         verdict: analysis.verdict || "SUSPICIOUS",
@@ -248,6 +278,7 @@ export default function PhishingDetector() {
         summary: analysis.summary || "Analysis complete.",
         risk_factors: analysis.risk_factors || [],
         features,
+        location: location || null,
         timestamp: new Date().toLocaleTimeString(),
       };
       setResult(res);
@@ -268,6 +299,15 @@ export default function PhishingDetector() {
   const vc = (v) =>
     v === "PHISHING" ? "phishing" : v === "SAFE" ? "safe" : "suspicious";
   const vi = (v) => (v === "PHISHING" ? "🔴" : v === "SAFE" ? "🟢" : "🟡");
+
+  const locationData = result ? parseLocation(result.location) : null;
+
+  const flagEmoji = (code) => {
+    if (!code || code.length !== 2) return "🌐";
+    return String.fromCodePoint(
+      ...[...code.toUpperCase()].map((c) => 127397 + c.charCodeAt(0)),
+    );
+  };
 
   return (
     <>
@@ -357,6 +397,7 @@ export default function PhishingDetector() {
                   <div className="verdict-url">{result.url}</div>
                 </div>
               </div>
+
               <div className="confidence-bar-wrap">
                 <div className="confidence-label">
                   <span>AI Confidence</span>
@@ -380,10 +421,46 @@ export default function PhishingDetector() {
                   />
                 </div>
               </div>
+
+              {locationData && (
+                <div className="analysis-section">
+                  <div className="analysis-title">Server Location</div>
+                  <div className="location-box">
+                    <div className="location-icon">
+                      {flagEmoji(locationData.countryCode)}
+                    </div>
+                    <div className="location-details">
+                      <div className="location-label">Geographic Location</div>
+                      <div className="location-value">
+                        {locationData.location || "Unknown location"}
+                      </div>
+                      <div className="location-row">
+                        {locationData.countryCode && (
+                          <span className="location-tag">
+                            {locationData.countryCode}
+                          </span>
+                        )}
+                        {locationData.isp && (
+                          <span className="location-tag">
+                            ISP: {locationData.isp}
+                          </span>
+                        )}
+                        {locationData.hosting && (
+                          <span className="location-tag hosting">
+                            Hosting Provider ⚠
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className="analysis-section">
                 <div className="analysis-title">AI Analysis</div>
                 <div className="analysis-text">{result.summary}</div>
               </div>
+
               {result.risk_factors.length > 0 && (
                 <div className="analysis-section">
                   <div className="analysis-title">Risk Factors Detected</div>
@@ -406,6 +483,7 @@ export default function PhishingDetector() {
                   </div>
                 </div>
               )}
+
               <div className="analysis-section">
                 <div className="analysis-title">URL Feature Breakdown</div>
                 <div className="features-grid">
@@ -419,6 +497,7 @@ export default function PhishingDetector() {
                   ))}
                 </div>
               </div>
+
               <div
                 style={{
                   marginTop: 16,
@@ -481,10 +560,9 @@ export default function PhishingDetector() {
             >
               PhishGuard AI
             </div>
-            AI-Based Phishing Website Detection System · FYP by Ghazali · 2026
+            AI-Based Phishing Website Detection System · Website by Ghazali Davin El
             <br />
-            This tool is for educational and research purposes. Always verify
-            results independently.
+            Always verify results independently.
           </div>
         </div>
       </div>
