@@ -22,45 +22,22 @@ const STYLES = `
   .glow-orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #ff3b5c 0%, transparent 70%); bottom: -100px; right: -100px; }
   .container { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
   .header { text-align: center; margin-bottom: 52px; animation: fadeDown 0.6s ease both; }
-  .header-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2);
-    color: var(--accent); font-size: 11px; letter-spacing: 0.15em;
-    text-transform: uppercase; padding: 6px 14px; border-radius: 20px; margin-bottom: 20px;
-  }
+  .header-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2); color: var(--accent); font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; padding: 6px 14px; border-radius: 20px; margin-bottom: 20px; }
   .badge-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse-dot 1.5s ease infinite; }
-  .header h1 {
-    font-family: var(--font-head); font-size: clamp(28px, 5vw, 48px); font-weight: 800; line-height: 1.1;
-    background: linear-gradient(135deg, #e8f0fe 0%, var(--accent) 60%, #0088cc 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 14px;
-  }
+  .header h1 { font-family: var(--font-head); font-size: clamp(28px, 5vw, 48px); font-weight: 800; line-height: 1.1; background: linear-gradient(135deg, #e8f0fe 0%, var(--accent) 60%, #0088cc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 14px; }
   .header p { color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 480px; margin: 0 auto; }
-  .scanner-card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
-    padding: 28px; margin-bottom: 28px; animation: fadeUp 0.6s 0.2s ease both; position: relative; overflow: hidden;
-  }
-  .scanner-card::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.6;
-  }
+  .scanner-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 28px; animation: fadeUp 0.6s 0.2s ease both; position: relative; overflow: hidden; }
+  .scanner-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.6; }
   .scanner-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
   .input-row { display: flex; gap: 12px; }
-  .url-input {
-    flex: 1; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
-    padding: 14px 18px; font-family: var(--font-mono); font-size: 13px; color: var(--text); outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
+  .url-input { flex: 1; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; font-family: var(--font-mono); font-size: 13px; color: var(--text); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
   .url-input::placeholder { color: var(--muted); }
   .url-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,212,255,0.1); }
-  .scan-btn {
-    background: var(--accent); color: var(--bg); border: none; border-radius: 10px; padding: 14px 28px;
-    font-family: var(--font-head); font-weight: 700; font-size: 13px; letter-spacing: 0.08em;
-    cursor: pointer; transition: all 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 8px;
-  }
+  .scan-btn { background: var(--accent); color: var(--bg); border: none; border-radius: 10px; padding: 14px 28px; font-family: var(--font-head); font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
   .scan-btn:hover:not(:disabled) { background: #33deff; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,212,255,0.3); }
   .scan-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
   .scan-btn .spinner { width: 14px; height: 14px; border: 2px solid rgba(0,0,0,0.3); border-top-color: var(--bg); border-radius: 50%; animation: spin 0.7s linear infinite; }
-  .result-card { border-radius: 16px; padding: 28px; margin-bottom: 28px; border: 1px solid; animation: fadeUp 0.4s ease both; position: relative; overflow: hidden; }
+  .result-card { border-radius: 16px; padding: 28px; margin-bottom: 28px; border: 1px solid; animation: fadeUp 0.4s ease both; }
   .result-card.phishing { background: rgba(255,59,92,0.07); border-color: rgba(255,59,92,0.3); }
   .result-card.safe { background: rgba(0,230,118,0.07); border-color: rgba(0,230,118,0.3); }
   .result-card.suspicious { background: rgba(255,170,0,0.07); border-color: rgba(255,170,0,0.3); }
@@ -97,7 +74,7 @@ const STYLES = `
   .history-dot.safe { background: var(--safe); }
   .history-dot.suspicious { background: var(--warn); }
   .history-url { flex: 1; font-size: 11px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .history-badge { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; flex-shrink: 0; }
+  .history-badge { font-size: 10px; font-weight: 600; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; flex-shrink: 0; }
   .history-badge.phishing { background: rgba(255,59,92,0.15); color: var(--danger); }
   .history-badge.safe { background: rgba(0,230,118,0.15); color: var(--safe); }
   .history-badge.suspicious { background: rgba(255,170,0,0.15); color: var(--warn); }
@@ -159,11 +136,9 @@ function extractUrlFeatures(url) {
           "suspend",
         ];
         const found = kw.filter((k) => url.toLowerCase().includes(k));
-        return found.length > 2
+        return found.length > 0
           ? { value: found.slice(0, 3).join(", "), status: "warn" }
-          : found.length > 0
-            ? { value: found.join(", "), status: "warn" }
-            : { value: "None", status: "good" };
+          : { value: "None", status: "good" };
       })(),
       TLD: (() => {
         const risky = [
@@ -187,24 +162,51 @@ function extractUrlFeatures(url) {
   }
 }
 
+function extractJSON(text) {
+  // Try direct parse first
+  try {
+    return JSON.parse(text);
+  } catch (e) {}
+  // Try extracting from markdown code blocks
+  const match = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (match) {
+    try {
+      return JSON.parse(match[1].trim());
+    } catch (e) {}
+  }
+  // Try finding raw JSON object
+  const objMatch = text.match(/\{[\s\S]*\}/);
+  if (objMatch) {
+    try {
+      return JSON.parse(objMatch[0]);
+    } catch (e) {}
+  }
+  // Build fallback from text content
+  const verdict = text.includes("PHISHING")
+    ? "PHISHING"
+    : text.includes("SAFE")
+      ? "SAFE"
+      : "SUSPICIOUS";
+  const confMatch = text.match(/(\d+(?:\.\d+)?)\s*%/);
+  const confidence = confMatch ? parseFloat(confMatch[1]) : 75;
+  return { verdict, confidence, summary: text.slice(0, 300), risk_factors: [] };
+}
+
 async function analyzeWithGemini(url, features) {
   const featStr = Object.entries(features)
     .map(([k, v]) => k + ": " + v.value)
     .join("\n");
-  const prompt = `You are a cybersecurity AI specializing in phishing detection. Analyze this URL and its extracted features.
- 
+  const prompt = `You are a cybersecurity AI. Analyze this URL for phishing.
+
 URL: ${url}
- 
-Extracted Features:
+
+Features:
 ${featStr}
- 
-Respond ONLY with a valid JSON object, no markdown, no extra text:
-{
-  "verdict": "PHISHING" or "SAFE" or "SUSPICIOUS",
-  "confidence": number between 0 and 100,
-  "summary": "2-3 sentence plain-language explanation mentioning specific risk factors",
-  "risk_factors": ["factor 1", "factor 2", "factor 3"]
-}`;
+
+Reply with ONLY a JSON object like this (no markdown, no explanation):
+{"verdict":"PHISHING","confidence":95,"summary":"This URL is phishing because...","risk_factors":["reason 1","reason 2"]}
+
+verdict must be exactly PHISHING, SAFE, or SUSPICIOUS.`;
 
   const response = await fetch("/api/scan", {
     method: "POST",
@@ -212,9 +214,10 @@ Respond ONLY with a valid JSON object, no markdown, no extra text:
     body: JSON.stringify({ prompt }),
   });
 
+  if (!response.ok) throw new Error("API error: " + response.status);
   const data = await response.json();
-  const clean = data.text.replace(/```json|```/g, "").trim();
-  return JSON.parse(clean);
+  if (data.error) throw new Error(data.error);
+  return extractJSON(data.text);
 }
 
 export default function PhishingDetector() {
@@ -240,9 +243,9 @@ export default function PhishingDetector() {
       const analysis = await analyzeWithGemini(trimmed, features);
       const res = {
         url: trimmed,
-        verdict: analysis.verdict,
-        confidence: analysis.confidence,
-        summary: analysis.summary,
+        verdict: analysis.verdict || "SUSPICIOUS",
+        confidence: analysis.confidence || 75,
+        summary: analysis.summary || "Analysis complete.",
         risk_factors: analysis.risk_factors || [],
         features,
         timestamp: new Date().toLocaleTimeString(),
@@ -251,25 +254,19 @@ export default function PhishingDetector() {
       setHistory((prev) => [
         {
           url: trimmed,
-          verdict: analysis.verdict,
+          verdict: res.verdict,
           time: new Date().toLocaleTimeString(),
         },
         ...prev.slice(0, 9),
       ]);
     } catch (e) {
-      setError("Analysis failed. Please check the URL and try again.");
+      setError("Analysis failed: " + e.message);
     }
     setLoading(false);
   };
 
   const vc = (v) =>
-    v === "PHISHING"
-      ? "phishing"
-      : v === "SAFE"
-        ? "safe"
-        : v === "SUSPICIOUS"
-          ? "suspicious"
-          : "error";
+    v === "PHISHING" ? "phishing" : v === "SAFE" ? "safe" : "suspicious";
   const vi = (v) => (v === "PHISHING" ? "🔴" : v === "SAFE" ? "🟢" : "🟡");
 
   return (
@@ -373,7 +370,7 @@ export default function PhishingDetector() {
                             : "var(--warn)",
                     }}
                   >
-                    {result.confidence.toFixed(1)}%
+                    {Number(result.confidence).toFixed(1)}%
                   </span>
                 </div>
                 <div className="confidence-bar-bg">
