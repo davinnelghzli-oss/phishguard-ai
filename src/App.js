@@ -1,158 +1,69 @@
 /* eslint-disable */
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 
 const STYLES = `
   @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #060b14;
-    --bg2: #0d1624;
-    --surface: #111c2e;
-    --surface2: #172035;
-    --border: #1e2d45;
-    --accent: #00d4ff;
-    --accent2: #0088cc;
-    --danger: #ff3b5c;
-    --warn: #ffaa00;
-    --safe: #00e676;
-    --text: #e8f0fe;
-    --muted: #5a7090;
-    --font-head: 'Syne', sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    --bg: #060b14; --bg2: #0d1624; --surface: #111c2e; --border: #1e2d45;
+    --accent: #00d4ff; --danger: #ff3b5c; --warn: #ffaa00; --safe: #00e676;
+    --text: #e8f0fe; --muted: #5a7090;
+    --font-head: 'Syne', sans-serif; --font-mono: 'JetBrains Mono', monospace;
   }
-
   body { background: var(--bg); color: var(--text); font-family: var(--font-mono); }
-
-  .app {
-    min-height: 100vh;
-    background: var(--bg);
-    position: relative;
-    overflow: hidden;
-  }
-
+  .app { min-height: 100vh; background: var(--bg); position: relative; overflow: hidden; }
   .grid-bg {
     position: fixed; inset: 0; pointer-events: none; z-index: 0;
-    background-image:
-      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
     background-size: 40px 40px;
-    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
   }
-
-  .glow-orb {
-    position: fixed; border-radius: 50%; pointer-events: none; z-index: 0;
-    filter: blur(80px); opacity: 0.15;
-  }
+  .glow-orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(80px); opacity: 0.15; }
   .glow-orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, #00d4ff 0%, transparent 70%); top: -200px; left: -200px; }
   .glow-orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #ff3b5c 0%, transparent 70%); bottom: -100px; right: -100px; }
-
-  .container {
-    position: relative; z-index: 1;
-    max-width: 860px; margin: 0 auto;
-    padding: 40px 24px 80px;
-  }
-
-  /* Header */
-  .header {
-    text-align: center;
-    margin-bottom: 52px;
-    animation: fadeDown 0.6s ease both;
-  }
+  .container { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 40px 24px 80px; }
+  .header { text-align: center; margin-bottom: 52px; animation: fadeDown 0.6s ease both; }
   .header-badge {
     display: inline-flex; align-items: center; gap: 8px;
     background: rgba(0,212,255,0.1); border: 1px solid rgba(0,212,255,0.2);
     color: var(--accent); font-size: 11px; letter-spacing: 0.15em;
-    text-transform: uppercase; padding: 6px 14px; border-radius: 20px;
-    margin-bottom: 20px;
+    text-transform: uppercase; padding: 6px 14px; border-radius: 20px; margin-bottom: 20px;
   }
   .badge-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse-dot 1.5s ease infinite; }
   .header h1 {
-    font-family: var(--font-head); font-size: clamp(28px, 5vw, 48px);
-    font-weight: 800; line-height: 1.1;
+    font-family: var(--font-head); font-size: clamp(28px, 5vw, 48px); font-weight: 800; line-height: 1.1;
     background: linear-gradient(135deg, #e8f0fe 0%, var(--accent) 60%, #0088cc 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    margin-bottom: 14px;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 14px;
   }
   .header p { color: var(--muted); font-size: 14px; line-height: 1.6; max-width: 480px; margin: 0 auto; }
-
-  /* Scanner */
   .scanner-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px;
-    margin-bottom: 28px;
-    animation: fadeUp 0.6s 0.2s ease both;
-    position: relative;
-    overflow: hidden;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 28px; margin-bottom: 28px; animation: fadeUp 0.6s 0.2s ease both; position: relative; overflow: hidden;
   }
   .scanner-card::before {
-    content: '';
-    position: absolute; top: 0; left: 0; right: 0; height: 1px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    opacity: 0.6;
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.6;
   }
-  .scanner-label {
-    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--accent); margin-bottom: 12px;
-  }
+  .scanner-label { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
   .input-row { display: flex; gap: 12px; }
   .url-input {
-    flex: 1;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 18px;
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--text);
-    outline: none;
+    flex: 1; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 18px; font-family: var(--font-mono); font-size: 13px; color: var(--text); outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
   .url-input::placeholder { color: var(--muted); }
   .url-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,212,255,0.1); }
   .scan-btn {
-    background: var(--accent);
-    color: var(--bg);
-    border: none;
-    border-radius: 10px;
-    padding: 14px 28px;
-    font-family: var(--font-head);
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-    display: flex; align-items: center; gap: 8px;
+    background: var(--accent); color: var(--bg); border: none; border-radius: 10px; padding: 14px 28px;
+    font-family: var(--font-head); font-weight: 700; font-size: 13px; letter-spacing: 0.08em;
+    cursor: pointer; transition: all 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 8px;
   }
   .scan-btn:hover:not(:disabled) { background: #33deff; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,212,255,0.3); }
   .scan-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-  .scan-btn .spinner {
-    width: 14px; height: 14px;
-    border: 2px solid rgba(0,0,0,0.3);
-    border-top-color: var(--bg);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-  }
-
-  /* Result */
-  .result-card {
-    border-radius: 16px;
-    padding: 28px;
-    margin-bottom: 28px;
-    border: 1px solid;
-    animation: fadeUp 0.4s ease both;
-    position: relative;
-    overflow: hidden;
-  }
+  .scan-btn .spinner { width: 14px; height: 14px; border: 2px solid rgba(0,0,0,0.3); border-top-color: var(--bg); border-radius: 50%; animation: spin 0.7s linear infinite; }
+  .result-card { border-radius: 16px; padding: 28px; margin-bottom: 28px; border: 1px solid; animation: fadeUp 0.4s ease both; position: relative; overflow: hidden; }
   .result-card.phishing { background: rgba(255,59,92,0.07); border-color: rgba(255,59,92,0.3); }
   .result-card.safe { background: rgba(0,230,118,0.07); border-color: rgba(0,230,118,0.3); }
   .result-card.suspicious { background: rgba(255,170,0,0.07); border-color: rgba(255,170,0,0.3); }
-  .result-card.error { background: rgba(90,112,144,0.1); border-color: var(--border); }
-
   .result-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
   .verdict-icon { font-size: 36px; }
   .verdict-title { font-family: var(--font-head); font-size: 22px; font-weight: 800; }
@@ -160,7 +71,6 @@ const STYLES = `
   .verdict-title.safe { color: var(--safe); }
   .verdict-title.suspicious { color: var(--warn); }
   .verdict-url { font-size: 11px; color: var(--muted); word-break: break-all; margin-top: 3px; }
-
   .confidence-bar-wrap { margin-bottom: 20px; }
   .confidence-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-bottom: 6px; }
   .confidence-bar-bg { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
@@ -168,49 +78,19 @@ const STYLES = `
   .confidence-bar-fill.phishing { background: linear-gradient(90deg, #cc1133, var(--danger)); }
   .confidence-bar-fill.safe { background: linear-gradient(90deg, #00aa55, var(--safe)); }
   .confidence-bar-fill.suspicious { background: linear-gradient(90deg, #cc7700, var(--warn)); }
-
   .analysis-section { margin-top: 20px; }
   .analysis-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
-  .analysis-text {
-    font-size: 13px; line-height: 1.8; color: var(--text);
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: 10px; padding: 16px;
-    white-space: pre-wrap; word-break: break-word;
-  }
-
-  .features-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px; margin-top: 16px;
-  }
-  .feature-chip {
-    background: var(--bg2); border: 1px solid var(--border);
-    border-radius: 8px; padding: 10px 12px;
-    font-size: 11px;
-  }
+  .analysis-text { font-size: 13px; line-height: 1.8; color: var(--text); background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; white-space: pre-wrap; word-break: break-word; }
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-top: 16px; }
+  .feature-chip { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 11px; }
   .feature-chip .fc-label { color: var(--muted); margin-bottom: 3px; }
   .feature-chip .fc-value { font-weight: 600; color: var(--text); font-size: 12px; }
   .feature-chip .fc-value.bad { color: var(--danger); }
   .feature-chip .fc-value.good { color: var(--safe); }
   .feature-chip .fc-value.warn { color: var(--warn); }
-
-  /* History */
-  .history-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 24px;
-    animation: fadeUp 0.6s 0.4s ease both;
-  }
-  .history-title { font-family: var(--font-head); font-size: 14px; font-weight: 700; margin-bottom: 16px; color: var(--muted); letter-spacing: 0.05em; }
-  .history-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 10px 12px; border-radius: 8px;
-    border: 1px solid var(--border);
-    margin-bottom: 8px;
-    background: var(--bg2);
-    transition: border-color 0.2s;
-    cursor: default;
-  }
+  .history-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; animation: fadeUp 0.6s 0.4s ease both; }
+  .history-title { font-family: var(--font-head); font-size: 14px; font-weight: 700; margin-bottom: 16px; color: var(--muted); }
+  .history-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 8px; background: var(--bg2); cursor: default; }
   .history-item:hover { border-color: var(--accent); }
   .history-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
   .history-dot.phishing { background: var(--danger); }
@@ -221,37 +101,28 @@ const STYLES = `
   .history-badge.phishing { background: rgba(255,59,92,0.15); color: var(--danger); }
   .history-badge.safe { background: rgba(0,230,118,0.15); color: var(--safe); }
   .history-badge.suspicious { background: rgba(255,170,0,0.15); color: var(--warn); }
-
-  /* Stats */
   .stats-row { display: flex; gap: 12px; margin-bottom: 28px; animation: fadeUp 0.6s 0.3s ease both; }
-  .stat-box {
-    flex: 1; background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 16px; text-align: center;
-  }
+  .stat-box { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
   .stat-num { font-family: var(--font-head); font-size: 28px; font-weight: 800; }
   .stat-num.total { color: var(--accent); }
   .stat-num.phishing { color: var(--danger); }
   .stat-num.safe { color: var(--safe); }
   .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; }
-
-  /* Animations */
   @keyframes fadeDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes spin { to { transform: rotate(360deg); } }
   @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-  @keyframes scan-line { from { top: 0; } to { top: 100%; } }
 `;
 
 function extractUrlFeatures(url) {
   try {
     const parsed = new URL(url.startsWith("http") ? url : "https://" + url);
     const hostname = parsed.hostname;
-    const full = url;
     return {
       "URL Length":
-        full.length > 75
-          ? { value: full.length, status: "bad" }
-          : { value: full.length, status: "good" },
+        url.length > 75
+          ? { value: url.length, status: "bad" }
+          : { value: url.length, status: "good" },
       "Has HTTPS": !url.startsWith("https")
         ? { value: "No", status: "bad" }
         : { value: "Yes", status: "good" },
@@ -259,24 +130,23 @@ function extractUrlFeatures(url) {
         ? { value: "Yes", status: "bad" }
         : { value: "No", status: "good" },
       "Subdomain Count": (() => {
-        const parts = hostname.split(".");
-        const count = Math.max(0, parts.length - 2);
-        return count > 2
-          ? { value: count, status: "bad" }
-          : { value: count, status: "good" };
+        const c = Math.max(0, hostname.split(".").length - 2);
+        return c > 2
+          ? { value: c, status: "bad" }
+          : { value: c, status: "good" };
       })(),
-      "Special Chars (@,//)":
-        (full.match(/[@%20\?=&]{3,}/g) || []).length > 2
+      "Special Chars":
+        (url.match(/[@%20=&]{3,}/g) || []).length > 2
           ? { value: "Suspicious", status: "bad" }
           : { value: "Normal", status: "good" },
       "Path Depth": (() => {
-        const depth = parsed.pathname.split("/").filter(Boolean).length;
-        return depth > 5
-          ? { value: depth, status: "warn" }
-          : { value: depth, status: "good" };
+        const d = parsed.pathname.split("/").filter(Boolean).length;
+        return d > 5
+          ? { value: d, status: "warn" }
+          : { value: d, status: "good" };
       })(),
       "Suspicious Keywords": (() => {
-        const keywords = [
+        const kw = [
           "login",
           "secure",
           "verify",
@@ -288,15 +158,15 @@ function extractUrlFeatures(url) {
           "signin",
           "suspend",
         ];
-        const found = keywords.filter((k) => full.toLowerCase().includes(k));
+        const found = kw.filter((k) => url.toLowerCase().includes(k));
         return found.length > 2
           ? { value: found.slice(0, 3).join(", "), status: "warn" }
           : found.length > 0
             ? { value: found.join(", "), status: "warn" }
             : { value: "None", status: "good" };
       })(),
-      "TLD Risk": (() => {
-        const riskTlds = [
+      TLD: (() => {
+        const risky = [
           ".tk",
           ".ml",
           ".ga",
@@ -306,50 +176,44 @@ function extractUrlFeatures(url) {
           ".top",
           ".club",
         ];
-        const found = riskTlds.find((t) => hostname.endsWith(t));
+        const found = risky.find((t) => hostname.endsWith(t));
         return found
           ? { value: found, status: "bad" }
-          : { value: parsed.hostname.split(".").pop(), status: "good" };
+          : { value: "." + hostname.split(".").pop(), status: "good" };
       })(),
     };
-  } catch {
+  } catch (e) {
     return {};
   }
 }
 
-async function analyzeWithClaude(url, features) {
+async function analyzeWithGemini(url, features) {
   const featStr = Object.entries(features)
-    .map(([k, v]) => `${k}: ${v.value}`)
+    .map(([k, v]) => k + ": " + v.value)
     .join("\n");
   const prompt = `You are a cybersecurity AI specializing in phishing detection. Analyze this URL and its extracted features.
-
+ 
 URL: ${url}
-
+ 
 Extracted Features:
 ${featStr}
-
-Provide a JSON response with EXACTLY this structure (no markdown, no extra text):
+ 
+Respond ONLY with a valid JSON object, no markdown, no extra text:
 {
   "verdict": "PHISHING" or "SAFE" or "SUSPICIOUS",
   "confidence": number between 0 and 100,
-  "summary": "2-3 sentence plain-language explanation of your verdict, mentioning specific risk factors found",
+  "summary": "2-3 sentence plain-language explanation mentioning specific risk factors",
   "risk_factors": ["factor 1", "factor 2", "factor 3"]
-}
+}`;
 
-Be accurate and direct. If the URL looks like a known legitimate site (google.com, microsoft.com, etc.), say SAFE. If it has classic phishing patterns, say PHISHING.`;
-
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
+  const response = await fetch("/api/scan", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
-      messages: [{ role: "user", content: prompt }],
-    }),
+    body: JSON.stringify({ prompt }),
   });
+
   const data = await response.json();
-  const text = data.content.map((i) => i.text || "").join("");
-  const clean = text.replace(/```json|```/g, "").trim();
+  const clean = data.text.replace(/```json|```/g, "").trim();
   return JSON.parse(clean);
 }
 
@@ -373,7 +237,7 @@ export default function PhishingDetector() {
     setError("");
     try {
       const features = extractUrlFeatures(trimmed);
-      const analysis = await analyzeWithClaude(trimmed, features);
+      const analysis = await analyzeWithGemini(trimmed, features);
       const res = {
         url: trimmed,
         verdict: analysis.verdict,
@@ -398,7 +262,7 @@ export default function PhishingDetector() {
     setLoading(false);
   };
 
-  const verdictClass = (v) =>
+  const vc = (v) =>
     v === "PHISHING"
       ? "phishing"
       : v === "SAFE"
@@ -406,14 +270,7 @@ export default function PhishingDetector() {
         : v === "SUSPICIOUS"
           ? "suspicious"
           : "error";
-  const verdictIcon = (v) =>
-    v === "PHISHING"
-      ? "🔴"
-      : v === "SAFE"
-        ? "🟢"
-        : v === "SUSPICIOUS"
-          ? "🟡"
-          : "⚠️";
+  const vi = (v) => (v === "PHISHING" ? "🔴" : v === "SAFE" ? "🟢" : "🟡");
 
   return (
     <>
@@ -423,7 +280,6 @@ export default function PhishingDetector() {
         <div className="glow-orb glow-orb-1" />
         <div className="glow-orb glow-orb-2" />
         <div className="container">
-          {/* Header */}
           <div className="header">
             <div className="header-badge">
               <span className="badge-dot" />
@@ -436,7 +292,6 @@ export default function PhishingDetector() {
             </p>
           </div>
 
-          {/* Stats */}
           {totalScans > 0 && (
             <div className="stats-row">
               <div className="stat-box">
@@ -454,9 +309,8 @@ export default function PhishingDetector() {
             </div>
           )}
 
-          {/* Scanner */}
           <div className="scanner-card">
-            <div className="scanner-label">// Enter URL to Analyze</div>
+            <div className="scanner-label">Enter URL to Analyze</div>
             <div className="input-row">
               <input
                 ref={inputRef}
@@ -474,10 +328,11 @@ export default function PhishingDetector() {
               >
                 {loading ? (
                   <>
-                    <span className="spinner" /> Scanning…
+                    <span className="spinner" />
+                    Scanning
                   </>
                 ) : (
-                  <>⚡ Scan URL</>
+                  <>&#9889; Scan URL</>
                 )}
               </button>
             </div>
@@ -490,27 +345,21 @@ export default function PhishingDetector() {
             )}
           </div>
 
-          {/* Result */}
           {result && (
-            <div className={`result-card ${verdictClass(result.verdict)}`}>
+            <div className={"result-card " + vc(result.verdict)}>
               <div className="result-header">
-                <span className="verdict-icon">
-                  {verdictIcon(result.verdict)}
-                </span>
+                <span className="verdict-icon">{vi(result.verdict)}</span>
                 <div>
-                  <div
-                    className={`verdict-title ${verdictClass(result.verdict)}`}
-                  >
+                  <div className={"verdict-title " + vc(result.verdict)}>
                     {result.verdict === "PHISHING"
-                      ? "⚠ PHISHING DETECTED"
+                      ? "PHISHING DETECTED"
                       : result.verdict === "SAFE"
-                        ? "✓ SAFE URL"
-                        : "◈ SUSPICIOUS"}
+                        ? "SAFE URL"
+                        : "SUSPICIOUS"}
                   </div>
                   <div className="verdict-url">{result.url}</div>
                 </div>
               </div>
-
               <div className="confidence-bar-wrap">
                 <div className="confidence-label">
                   <span>AI Confidence</span>
@@ -529,20 +378,18 @@ export default function PhishingDetector() {
                 </div>
                 <div className="confidence-bar-bg">
                   <div
-                    className={`confidence-bar-fill ${verdictClass(result.verdict)}`}
-                    style={{ width: `${result.confidence}%` }}
+                    className={"confidence-bar-fill " + vc(result.verdict)}
+                    style={{ width: result.confidence + "%" }}
                   />
                 </div>
               </div>
-
               <div className="analysis-section">
-                <div className="analysis-title">// AI Analysis</div>
+                <div className="analysis-title">AI Analysis</div>
                 <div className="analysis-text">{result.summary}</div>
               </div>
-
               {result.risk_factors.length > 0 && (
                 <div className="analysis-section">
-                  <div className="analysis-title">// Risk Factors Detected</div>
+                  <div className="analysis-title">Risk Factors Detected</div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                     {result.risk_factors.map((rf, i) => (
                       <span
@@ -556,27 +403,25 @@ export default function PhishingDetector() {
                           borderRadius: 6,
                         }}
                       >
-                        ⚑ {rf}
+                        {rf}
                       </span>
                     ))}
                   </div>
                 </div>
               )}
-
               <div className="analysis-section">
-                <div className="analysis-title">// URL Feature Breakdown</div>
+                <div className="analysis-title">URL Feature Breakdown</div>
                 <div className="features-grid">
                   {Object.entries(result.features).map(([key, val]) => (
                     <div className="feature-chip" key={key}>
                       <div className="fc-label">{key}</div>
-                      <div className={`fc-value ${val.status}`}>
+                      <div className={"fc-value " + val.status}>
                         {String(val.value)}
                       </div>
                     </div>
                   ))}
                 </div>
               </div>
-
               <div
                 style={{
                   marginTop: 16,
@@ -585,30 +430,25 @@ export default function PhishingDetector() {
                   textAlign: "right",
                 }}
               >
-                Analyzed at {result.timestamp} · Powered by Claude AI
+                Analyzed at {result.timestamp} · Powered by Gemini AI
               </div>
             </div>
           )}
 
-          {/* History */}
           {history.length > 0 && (
             <div className="history-card">
-              <div className="history-title">// Recent Scans</div>
+              <div className="history-title">Recent Scans</div>
               {history.map((item, i) => (
                 <div
                   className="history-item"
                   key={i}
                   onClick={() => setUrl(item.url)}
                 >
-                  <span
-                    className={`history-dot ${verdictClass(item.verdict)}`}
-                  />
+                  <span className={"history-dot " + vc(item.verdict)} />
                   <span className="history-url" title={item.url}>
                     {item.url}
                   </span>
-                  <span
-                    className={`history-badge ${verdictClass(item.verdict)}`}
-                  >
+                  <span className={"history-badge " + vc(item.verdict)}>
                     {item.verdict}
                   </span>
                   <span
@@ -625,7 +465,6 @@ export default function PhishingDetector() {
             </div>
           )}
 
-          {/* Footer */}
           <div
             style={{
               textAlign: "center",
