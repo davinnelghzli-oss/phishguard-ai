@@ -553,8 +553,7 @@ export default function PhishingDetector() {
 
           <div style={{ textAlign: "center", marginTop: 48, fontSize: 11, color: "var(--muted)", lineHeight: 1.8 }}>
             <div style={{ marginBottom: 6, fontFamily: "var(--font-head)", fontSize: 13, color: "var(--border)" }}>PhishGuard AI</div>
-            AI-Based Phishing Website Detection System 
-            <br>Website by Ghazali Davin El</br>
+            AI-Based Phishing Website Detection System · Website by Ghazali Davin El
             <br />Always verify results independently.
           </div>
         </div>
