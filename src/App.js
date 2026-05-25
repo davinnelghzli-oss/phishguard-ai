@@ -361,7 +361,7 @@ export default function PhishingDetector() {
 
           <div className="header">
             <div className="header-badge"><span className="badge-dot" />AI Threat Detection · Active</div>
-            <h1>PhishGuard AI</h1>
+            <h1>G-PhishGuard AI</h1>
             <p>Paste any URL below. Our AI analyzes 60+ signals to detect phishing attacks in real time.</p>
           </div>
 
@@ -552,9 +552,9 @@ export default function PhishingDetector() {
           )}
 
           <div style={{ textAlign: "center", marginTop: 48, fontSize: 11, color: "var(--muted)", lineHeight: 1.8 }}>
-            <div style={{ marginBottom: 6, fontFamily: "var(--font-head)", fontSize: 13, color: "var(--border)" }}>PhishGuard AI</div>
-            AI-Based Phishing Website Detection System · Website by Ghazali Davin El
-            <br />Always verify results independently.
+            <div style={{ marginBottom: 6, fontFamily: "var(--font-head)", fontSize: 13, color: "var(--border)" }}>G-PhishGuard AI</div>
+            AI-Based Phishing Website Detection System · Always verify results independently
+            <br />@ 2026 Ghazali Davin El
           </div>
         </div>
       </div>
